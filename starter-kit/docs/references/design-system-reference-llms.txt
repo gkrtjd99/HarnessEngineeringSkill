@@ -1,0 +1,4 @@
+Design system notes for agents.
+Use design tokens first.
+Prefer existing component patterns before creating new variants.
+

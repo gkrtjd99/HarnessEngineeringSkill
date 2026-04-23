@@ -1,0 +1,6 @@
+Design System Reference for LLMs
+
+Use token names before raw values.
+Prefer documented spacing and typography scales.
+Validate component variants against the design system source.
+

@@ -1,0 +1,4 @@
+Nixpacks notes for agents.
+Prefer deterministic build configuration.
+Document all required environment variables.
+

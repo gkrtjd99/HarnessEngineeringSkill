@@ -1,0 +1,6 @@
+uv Reference for LLMs
+
+Prefer `uv` for environment and dependency flows.
+Keep lockfiles consistent with declared dependencies.
+Use reproducible commands in scripts and CI.
+

@@ -1,0 +1,21 @@
+name: Starter Kit CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint Architecture Docs
+        run: bash starter-kit/scripts/lint-architecture.sh starter-kit/docs/design-docs
+
+      - name: Check Markdown Links
+        run: bash starter-kit/scripts/check-doc-links.sh starter-kit
+

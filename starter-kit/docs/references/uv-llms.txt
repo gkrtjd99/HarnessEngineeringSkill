@@ -1,0 +1,4 @@
+uv notes for agents.
+Use reproducible commands.
+Keep dependency and lockfile changes synchronized.
+

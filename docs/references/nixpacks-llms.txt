@@ -1,0 +1,6 @@
+Nixpacks Reference for LLMs
+
+Prefer deterministic build inputs.
+Pin runtime versions where possible.
+Document required environment variables explicitly.
+
