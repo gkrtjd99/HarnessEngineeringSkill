@@ -91,10 +91,9 @@ OpenAI의 하네스 엔지니어링 글을 읽고 나면, 에이전트에게 바
 
 1. `skill/`에서 canonical `harness-init`를 수정합니다.
 2. `bash scripts/sync-skill-targets.sh`를 실행합니다.
-3. `bash scripts/test-skill-local.sh`로 로컬 평가 루프를 돌려 스킬이 올바른 문서를 생성하는지 검증합니다.
-4. `targets/`에 생성된 런타임별 번들을 설치합니다.
-5. 각 도구에서 `harness-init`를 호출해 프로젝트 문서 구조를 먼저 생성합니다.
-6. 그다음 생성된 문서를 바탕으로 에이전트가 기능 개발을 이어갑니다.
+3. `targets/`에 생성된 런타임별 번들을 설치합니다.
+4. 각 도구에서 `harness-init`를 호출해 프로젝트 문서 구조를 먼저 생성합니다.
+5. 그다음 생성된 문서를 바탕으로 에이전트가 기능 개발을 이어갑니다.
 
 다이어그램으로 보면 아래 흐름입니다.
 
@@ -103,14 +102,12 @@ flowchart TD
     A[OpenAI Harness Engineering article] --> B[Decide to initialize docs before coding]
     B --> C[Edit skill/SKILL.md and shared references]
     C --> D[Run scripts/sync-skill-targets.sh]
-    D --> E[Run scripts/test-skill-local.sh]
-    E --> F{Judge: 8/8 hard checks pass?}
-    F -- no --> C
-    F -- yes --> G[Install bundle into Claude or Claude Code or Codex or Antigravity]
-    G --> H[Run harness-init]
-    H --> I[Answer interview questions]
-    I --> J[Generate README AGENTS ARCHITECTURE docs scripts]
-    J --> K[Agents continue implementation using generated docs]
+    D --> E[Generate runtime bundles in targets/]
+    E --> F[Install bundle into Claude or Claude Code or Codex or Antigravity]
+    F --> G[Run harness-init]
+    G --> H[Answer interview questions]
+    H --> I[Generate README AGENTS ARCHITECTURE docs scripts]
+    I --> J[Agents continue implementation using generated docs]
 ```
 
 질문 기반 동작 흐름은 아래처럼 이해하면 됩니다.
@@ -119,7 +116,6 @@ flowchart TD
 project context input
 -> interview questions
 -> harness document set generation
--> evaluation loop (Run phase + Judge phase)
 -> execution plan and references become available
 -> implementation agents read the docs
 -> project development starts with shared context
@@ -218,49 +214,6 @@ Antigravity는 filesystem skill 번들 대신 prompt adapter로 사용합니다.
 5. `starter-kit/`
    생성 결과가 어떤 모양을 가질 수 있는지 예시를 봅니다.
 
-## Testing & Evaluation
-
-### 번들 구조 검사 (모델 호출 없음)
-
-```bash
-bash scripts/check-bundle-structure.sh
-```
-
-Claude, Claude Code, Codex, Antigravity 네 런타임의 배포 번들이 필수 파일과 SKILL.md 프론트매터를 갖추고 있는지 결정론적으로 검사합니다.
-API 비용이 없으며 CI에서도 동일하게 실행됩니다.
-
-### 로컬 평가 루프 (Claude Code CLI 사용)
-
-```bash
-bash scripts/test-skill-local.sh
-```
-
-두 단계로 스킬을 end-to-end 검증합니다.
-
-- Run phase: `tests/fixtures/interview.json`의 인터뷰 답변을 사용해 임시 샌드박스 안에서 `harness-init`를 실행하고 문서를 생성합니다.
-- Judge phase: 생성된 파일 트리와 `tests/judge-rubric.md`를 Claude에 넘겨 8개 하드 체크리스트와 4개 정성 지표를 채점합니다.
-
-결과 리포트는 `tests/reports/<ISO8601>/report.md`에 저장됩니다.
-하드 체크리스트 항목 중 하나라도 `[FAIL]`이면 스크립트가 exit 1로 종료됩니다.
-
-Anthropic API 키가 아닌 Claude Code CLI 구독을 사용하므로 별도 API 비용이 없습니다.
-
-### tests/ 디렉토리 구조
-
-```text
-tests/
-├── fixtures/
-│   └── interview.json        # 평가용 샘플 인터뷰 답변 (acme-orders 프로젝트)
-├── prompts/
-│   └── run.md                # Run phase 지시 프롬프트
-├── judge-rubric.md           # Judge phase 평가 기준 (8 hard checks + 4 rubric axes)
-└── reports/                  # 평가 결과 (gitignore 처리됨)
-    └── <ISO8601>/
-        ├── run-stdout.log
-        ├── report.md
-        └── generated/        # 스킬이 생성한 파일 스냅샷
-```
-
 ## Sync
 
 `targets/`는 직접 수정하지 않는 것이 원칙입니다.
@@ -277,8 +230,6 @@ bash starter-kit/scripts/lint-architecture.sh docs/design-docs
 bash starter-kit/scripts/check-doc-links.sh .
 bash -n scripts/sync-skill-targets.sh
 bash -n skill/scripts/scan-project.sh
-bash scripts/check-bundle-structure.sh
-bash scripts/test-skill-local.sh
 ```
 
 ## Repository Structure
@@ -292,18 +243,16 @@ bash scripts/test-skill-local.sh
 ├── scripts/
 ├── skill/
 ├── starter-kit/
-├── targets/
-└── tests/
+└── targets/
 ```
 
 각 디렉토리의 역할은 아래와 같습니다.
 
 - `skill/`: canonical `harness-init` source
 - `targets/`: 런타임별 배포 번들
-- `scripts/`: bundle sync, 구조 검사, 로컬 평가 자동화
+- `scripts/`: bundle sync automation
 - `starter-kit/`: 생성 결과의 정적 기준 예시
 - `docs/`: 이 저장소 자체의 설명과 설계 근거
-- `tests/`: 평가용 fixture, 프롬프트, Judge 루브릭
 
 ## Repository Map
 
@@ -329,8 +278,4 @@ bash scripts/test-skill-local.sh
 - 루트 `docs/`와 `starter-kit/docs/`의 Markdown 및 아키텍처 문서 검사
 - `starter-kit/scripts/`, `skill/scripts/`, `scripts/`의 셸 문법 검사
 - `bash scripts/sync-skill-targets.sh` 실행
-- `bash scripts/check-bundle-structure.sh`로 네 런타임 번들의 필수 파일, SKILL.md 프론트매터, 상대 링크 무결성 검사
 - 동기화 후 worktree가 깨끗한지 검사
-
-> [!NOTE]
-> CI는 모델을 호출하지 않습니다. LLM-as-judge 평가(`test-skill-local.sh`)는 스킬을 수정할 때 로컬에서 직접 실행해야 합니다.
