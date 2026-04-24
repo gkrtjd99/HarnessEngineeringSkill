@@ -15,5 +15,5 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# 평가 리포트
-tests/reports/
+# 로컬 평가 도구
+tests/
