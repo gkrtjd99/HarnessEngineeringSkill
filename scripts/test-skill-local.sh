@@ -58,7 +58,65 @@ main() {
 
   echo "[test-skill-local] sandbox: $SANDBOX"
   echo "[test-skill-local] report dir: $REPORT_DIR"
-  echo "[test-skill-local] scaffold OK (no model calls yet)"
+
+  local run_prompt
+  run_prompt="$(cat "$PROMPT_RUN")"$'\n\n```json\n'"$(cat "$FIXTURE")"$'\n```\n'
+
+  echo "[test-skill-local] Run phase: invoking claude -p..."
+  (
+    cd "$SANDBOX"
+    claude -p "$run_prompt" --permission-mode bypassPermissions
+  ) > "$REPORT_DIR/run-stdout.log"
+
+  if ! grep -q '^RUN_DONE$' "$REPORT_DIR/run-stdout.log"; then
+    echo "[test-skill-local] WARNING: RUN_DONE marker not found in run stdout" >&2
+  fi
+
+  mkdir -p "$REPORT_DIR/generated"
+  (
+    cd "$SANDBOX"
+    find . -mindepth 1 \( -path './.claude' -prune \) -o -print \
+      | while IFS= read -r entry; do
+          [[ "$entry" == "." ]] && continue
+          if [[ -d "$entry" ]]; then
+            mkdir -p "$REPORT_DIR/generated/$entry"
+            continue
+          fi
+          mkdir -p "$REPORT_DIR/generated/$(dirname "$entry")"
+          cp "$entry" "$REPORT_DIR/generated/$entry"
+        done
+  )
+
+  local judge_input judge_prompt
+  judge_input="$(mktemp)"
+  trap 'rm -f "$judge_input"; cleanup' EXIT
+  {
+    cat "$RUBRIC"
+    echo ""
+    echo "## Generated Tree"
+    (
+      cd "$SANDBOX"
+      find . -type f -not -path './.claude/*' | sort | while IFS= read -r f; do
+        echo ""
+        echo "### ${f#./}"
+        echo '```'
+        cat "$f"
+        echo '```'
+      done
+    )
+  } > "$judge_input"
+
+  echo "[test-skill-local] Judge phase: invoking claude -p..."
+  judge_prompt="$(cat "$judge_input")"
+  claude -p "$judge_prompt" --permission-mode bypassPermissions \
+    > "$REPORT_DIR/report.md"
+
+  echo "[test-skill-local] report: $REPORT_DIR/report.md"
+
+  if grep -q '^- \[FAIL\]' "$REPORT_DIR/report.md"; then
+    echo "[test-skill-local] hard-checklist FAIL detected; exiting 1" >&2
+    exit 1
+  fi
 }
 
 main "$@"
