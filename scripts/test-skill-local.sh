@@ -18,6 +18,7 @@ RUBRIC="$ROOT_DIR/tests/judge-rubric.md"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 REPORT_DIR="$ROOT_DIR/tests/reports/$STAMP"
 SANDBOX=""
+JUDGE_INPUT=""
 
 require_file() {
   : '
@@ -40,6 +41,8 @@ require_cmd() {
 
 cleanup() {
   [[ -n "$SANDBOX" && -d "$SANDBOX" ]] && rm -rf "$SANDBOX"
+  [[ -n "$JUDGE_INPUT" && -f "$JUDGE_INPUT" ]] && rm -f "$JUDGE_INPUT"
+  return 0
 }
 
 main() {
@@ -87,9 +90,8 @@ main() {
         done
   )
 
-  local judge_input judge_prompt
-  judge_input="$(mktemp)"
-  trap 'rm -f "$judge_input"; cleanup' EXIT
+  local judge_prompt
+  JUDGE_INPUT="$(mktemp)"
   {
     cat "$RUBRIC"
     echo ""
@@ -104,10 +106,10 @@ main() {
         echo '```'
       done
     )
-  } > "$judge_input"
+  } > "$JUDGE_INPUT"
 
   echo "[test-skill-local] Judge phase: invoking claude -p..."
-  judge_prompt="$(cat "$judge_input")"
+  judge_prompt="$(cat "$JUDGE_INPUT")"
   claude -p "$judge_prompt" --permission-mode bypassPermissions \
     > "$REPORT_DIR/report.md"
 
