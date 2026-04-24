@@ -36,6 +36,9 @@ jobs:
       - name: Sync Skill Targets
         run: bash scripts/sync-skill-targets.sh
 
+      - name: Check Bundle Structure
+        run: bash scripts/check-bundle-structure.sh
+
       - name: Verify Clean Worktree
         run: |
           if [[ -n "$(git status --short --untracked-files=all)" ]]; then
