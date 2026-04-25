@@ -19,19 +19,21 @@ Treat the following files as the core harness-engineering set:
 
 ## Optional Docs
 
-Generate the following documents only when the project needs them:
+Generate each document only when its stated condition is met:
 
-- `docs/exec-plans/active/EP-xxxx.md`
-- `docs/exec-plans/completed/EP-xxxx.md`
-- `docs/generated/db-schema.md`
-- `docs/product-specs/<feature>.md`
-- `docs/DESIGN.md`
-- `docs/FRONTEND.md`
-- `docs/PLANS.md`
-- `docs/PRODUCT_SENSE.md`
-- `docs/QUALITY_SCORE.md`
-- `docs/RELIABILITY.md`
-- `docs/SECURITY.md`
+| File | Generate when... |
+| --- | --- |
+| `docs/FRONTEND.md` | A frontend tech stack is present (e.g., React, Vue, Next.js, SvelteKit) |
+| `docs/SECURITY.md` | Authentication, authorization, or RLS is a core constraint |
+| `docs/RELIABILITY.md` | Availability, resource limits, or fault tolerance matter (free-tier infra, SLAs, uptime targets) |
+| `docs/generated/db-schema.md` | A database schema is described or implied |
+| `docs/exec-plans/active/EP-xxxx.md` | At least one in-progress task maps to an execution plan |
+| `docs/exec-plans/completed/EP-xxxx.md` | A previously completed execution plan exists |
+| `docs/product-specs/<feature>.md` | A concrete feature with scope, constraints, and done-when criteria is described |
+| `docs/DESIGN.md` | Design decisions exist that are not captured in architecture or product specs |
+| `docs/PLANS.md` | Multiple execution plans need a single index |
+| `docs/PRODUCT_SENSE.md` | Product direction, user personas, or market positioning need to be captured |
+| `docs/QUALITY_SCORE.md` | Quality metrics (test coverage, Lighthouse score, error rate) are tracked as explicit targets |
 
 ## Reference Tools Rule
 
@@ -215,6 +217,159 @@ Pitfalls
 ## Progress Notes
 
 ## Open Questions
+```
+
+## docs/FRONTEND.md Template
+
+```markdown
+# Frontend
+
+## Stack
+
+| Concern | Choice |
+| --- | --- |
+| Framework | ... |
+| Language | ... |
+| Styling | ... |
+| State | ... |
+
+## Rendering Model
+
+[Describe RSC vs client component strategy]
+
+## Data Fetching Conventions
+
+[Describe how server and client data fetching are handled]
+
+## Component Organization
+
+[Directory layout]
+
+## Performance Budget
+
+[Lighthouse targets and Core Web Vitals targets]
+```
+
+## docs/SECURITY.md Template
+
+```markdown
+# Security
+
+## Authentication
+
+[Describe auth provider and flow]
+
+## Authorization
+
+[Describe RLS or middleware-level authorization rules]
+
+## Secret Management
+
+| Variable | Purpose |
+| --- | --- |
+| ... | ... |
+
+## Input Validation
+
+[Describe validation strategy at API boundaries]
+
+## Known Limitations
+
+[Describe known security gaps and mitigations]
+```
+
+## docs/RELIABILITY.md Template
+
+```markdown
+# Reliability
+
+## Platform Constraints
+
+| Platform | Constraint | Impact |
+| --- | --- | --- |
+| ... | ... | ... |
+
+## Caching Strategy
+
+[Describe cache layers, TTLs, and invalidation]
+
+## Error Handling and Observability
+
+[Describe error capture, alerting, and logging]
+
+## Graceful Degradation
+
+| Failure | Degraded Behavior |
+| --- | --- |
+| ... | ... |
+
+## Recovery Runbook
+
+[Step-by-step recovery for known failure modes]
+```
+
+## docs/QUALITY_SCORE.md Template
+
+```markdown
+# Quality Score
+
+## Targets
+
+| Metric | Target | Current |
+| --- | --- | --- |
+| Lighthouse Performance | ≥ 90 | — |
+| Test Coverage | ... | — |
+| Error Rate | ... | — |
+
+## Measurement
+
+[How and when each metric is measured]
+
+## History
+
+[Track score changes across milestones]
+```
+
+## docs/PRODUCT_SENSE.md Template
+
+```markdown
+# Product Sense
+
+## Problem
+
+[Core user problem being solved]
+
+## Target Users
+
+[Primary and secondary personas]
+
+## Value Proposition
+
+[What makes this product worth using]
+
+## Non-Goals
+
+[Explicitly out of scope]
+
+## Success Metrics
+
+[How success is measured from a product perspective]
+```
+
+## docs/DESIGN.md Template
+
+```markdown
+# Design Decisions
+
+## Decision Log
+
+| Date | Decision | Rationale | Alternatives Rejected |
+| --- | --- | --- | --- |
+| ... | ... | ... | ... |
+
+## Open Questions
+
+[Unresolved design decisions]
 ```
 
 ## scripts/init.sh Template

@@ -42,7 +42,7 @@ Treat blank answers for questions 9 and 10 as the same fallback placeholder valu
 - Always create the harness core documents: `docs/design-docs/index.md`, `docs/design-docs/core-beliefs.md`, `docs/exec-plans/tech-debt-tracker.md`, and `docs/product-specs/index.md`.
 - Generate detailed design notes under `docs/design-docs/` only when they are justified by the project.
 - When generating `docs/PLANS.md`, follow the structure encouraged by the OpenAI Codex exec-plans article.
-- Generate non-core documents only when they fit the project profile.
+- Generate optional documents according to the condition table in `references/templates.md` — each optional document has an explicit condition; generate it only when that condition is met.
 - If `referenceTools` is present, generate one `docs/references/<tool>-llms.txt` per tool.
 - If `referenceTools` resolves to the fallback placeholder value, generate a single `docs/references/stack-reference-llms.txt`.
 - Reflect `doneWhen` in `AGENTS.md` and in at least one document under `docs/product-specs/` or `docs/exec-plans/active/`.
