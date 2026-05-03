@@ -16,7 +16,7 @@ The top-level subsystems are:
    The canonical `harness-init` skill source, shared references, and runtime-specific install notes.
 
 3. `targets/`
-   Generated runtime bundles for Claude, Claude Code, Codex, and Antigravity.
+   Generated runtime bundles for Claude, Claude Code, Codex, OpenCode, and Antigravity.
 
 4. `.github/workflows/`
    Repository automation that validates documentation, shell scripts, and target-bundle synchronization.

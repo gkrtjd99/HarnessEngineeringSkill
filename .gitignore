@@ -12,6 +12,9 @@ Thumbs.db
 *.swo
 .claude/settings.local.json
 
+# 로컬 에이전트 상태
+.sisyphus/*.local.md
+
 # 로그
 *.log
 npm-debug.log*

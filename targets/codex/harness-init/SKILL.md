@@ -10,7 +10,7 @@ allowed-tools: Read Write Bash
 # Skill Overview
 
 This skill is the canonical source for a repository operating structure generated from an interview.
-It is intended to be packaged for Claude, Claude Code, Codex, and Antigravity without changing the underlying workflow.
+It is intended to be packaged for Claude, Claude Code, Codex, OpenCode, and Antigravity without changing the underlying workflow.
 
 ## Interview Questions
 

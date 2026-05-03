@@ -8,6 +8,7 @@
 - `claude/`: Claude 웹 업로드용 skill bundle
 - `claude-code/`: Claude Code용 filesystem skill bundle
 - `codex/`: Codex용 filesystem skill bundle
+- `opencode/`: OpenCode용 filesystem skill bundle
 - `antigravity/`: Antigravity용 prompt adapter bundle
 
 ## Rule

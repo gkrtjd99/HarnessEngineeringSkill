@@ -10,7 +10,7 @@ The main design goal is to keep the workflow consistent while distributing it in
 ## Decision
 
 Keep `skill/` as the only source of truth for the `harness-init` workflow.
-Generate runtime bundles for Claude, Claude Code, Codex, and Antigravity into `targets/` with a sync script.
+Generate runtime bundles for Claude, Claude Code, Codex, OpenCode, and Antigravity into `targets/` with a sync script.
 Do not edit `targets/` by hand.
 
 ## Scope

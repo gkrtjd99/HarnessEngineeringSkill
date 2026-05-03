@@ -76,7 +76,7 @@ check_bundle() {
   echo "[check-bundle-structure] PASS: $runtime"
 }
 
-for runtime in claude claude-code codex antigravity; do
+for runtime in claude claude-code codex opencode antigravity; do
   check_bundle "$runtime"
 done
 

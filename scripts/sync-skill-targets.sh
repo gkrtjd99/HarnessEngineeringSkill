@@ -26,4 +26,5 @@ prepare_bundle() {
 prepare_bundle "claude"
 prepare_bundle "claude-code"
 prepare_bundle "codex"
+prepare_bundle "opencode"
 prepare_bundle "antigravity"

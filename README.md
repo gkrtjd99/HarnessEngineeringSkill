@@ -34,6 +34,28 @@ cp -R targets/codex/harness-init .codex/skills/harness-init
 Use the harness-init skill to scaffold the project operating documents.
 ```
 
+### OpenCode
+
+프로젝트 로컬 설치 예시는 아래와 같습니다.
+
+```bash
+mkdir -p .opencode/skills/harness-init
+cp -R targets/opencode/harness-init/* .opencode/skills/harness-init/
+```
+
+전역 스킬로 설치하려면 아래처럼 복사합니다.
+
+```bash
+mkdir -p ~/.config/opencode/skills/harness-init
+cp -R targets/opencode/harness-init/* ~/.config/opencode/skills/harness-init/
+```
+
+세션에서 아래처럼 요청합니다.
+
+```text
+Use the harness-init skill to scaffold the project operating documents.
+```
+
 ### Claude (claude.ai)
 
 `targets/claude/harness-init/` 폴더를 ZIP으로 압축한 뒤 Claude의 커스텀 스킬 업로드 화면에 등록합니다.
