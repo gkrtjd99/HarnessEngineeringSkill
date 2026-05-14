@@ -93,7 +93,7 @@ Use the harness-init skill to scaffold the project operating documents.
 | `docs/SECURITY.md` | 인증/보안이 핵심 제약으로 언급될 때 |
 | `docs/RELIABILITY.md` | 가용성·장애 대응이 중요한 서비스일 때 |
 | `docs/generated/db-schema.md` | 데이터베이스 구조가 있을 때 |
-| `docs/module-contracts/<module>.md` | 기능, 패키지, 서비스, 인프라 영역, 스크립트 묶음에 명확한 소유권이 있을 때 |
+| `docs/module-contracts/<module>.md` | 다중 파일·장기 유지되는 기능, 패키지, 서비스, 인프라 영역, 스크립트 묶음에 명확한 소유권이 있을 때 (단일 파일·일회성 모듈은 생성하지 않음) |
 | `docs/exec-plans/active/EP-xxxx.md` | 현재 진행 중인 실행 계획이 있을 때 |
 | `docs/product-specs/<feature>.md` | 구체적인 기능 스펙이 있을 때 |
 | `docs/DESIGN.md` | 별도로 정리할 설계 결정이 있을 때 |

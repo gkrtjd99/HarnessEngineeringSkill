@@ -32,7 +32,7 @@ Generate each document only when its stated condition is met:
 | `docs/SECURITY.md` | Authentication, authorization, or RLS is a core constraint |
 | `docs/RELIABILITY.md` | Availability, resource limits, or fault tolerance matter (free-tier infra, SLAs, uptime targets) |
 | `docs/generated/db-schema.md` | A database schema is described or implied |
-| `docs/module-contracts/<module>.md` | A module, feature, package, service, infrastructure area, or script suite has explicit ownership, public entry points, or non-obvious reuse rules |
+| `docs/module-contracts/<module>.md` | A durable, multi-file module, feature, package, service, infrastructure area, or script suite has explicit ownership, public entry points, or non-obvious reuse rules; skip for small, single-file, or short-lived modules |
 | `docs/exec-plans/active/EP-xxxx.md` | At least one in-progress task maps to an execution plan |
 | `docs/exec-plans/completed/EP-xxxx.md` | A previously completed execution plan exists |
 | `docs/product-specs/<feature>.md` | A concrete feature with scope, constraints, and done-when criteria is described |
@@ -341,6 +341,13 @@ Include concise commands, constraints, and known pitfalls.
 
 This document holds detailed development rules that should not live in `AGENTS.md`.
 `AGENTS.md` stays a short navigation map.
+
+## Read Order Usage
+
+- The `AGENTS.md` Read Order is a list of documents to consult when relevant, not a checklist to read in full for every task.
+- Agents MUST always read `ARCHITECTURE.md` for structural context.
+- Agents MUST read this file (`development-rules.md`), `docs/generated/code-map.md`, and the relevant `docs/module-contracts/` files only when adding, refactoring, or removing code or modules.
+- Agents MAY skip the code map and module contracts for documentation-only tasks, configuration tweaks, or scoped bug fixes that do not change module boundaries or public surfaces.
 
 ## Code Discovery
 
