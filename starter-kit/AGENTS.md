@@ -1,28 +1,35 @@
 # AGENTS.md Template
 
-This template defines baseline rules for agent collaboration in a project repository.
+This template defines the short navigation entry point for agent collaboration in a project repository.
 
 ## Scope
 
 These rules apply repository-wide unless a nested `AGENTS.md` provides stricter rules.
 
-## Execution Rules
+## Read Order
+
+1. `ARCHITECTURE.md`
+2. `docs/references/development-rules.md`
+3. `docs/generated/code-map.md`
+4. `docs/module-contracts/README.md`
+5. `docs/product-specs/index.md`
+6. `docs/exec-plans/active/`
+7. `docs/design-docs/`
+8. `docs/references/`
+
+## Repository Map
+
+- `app/`: application runtime code
+- `docs/`: product, architecture, execution, reference, and module-contract documents
+- `scripts/`: repository automation
+
+## Reference Map
+
+- Development rules: `docs/references/development-rules.md`
+- Code surface index: `docs/generated/code-map.md`
+- Module contracts: `docs/module-contracts/README.md`
+
+## Rules
 
 - Agents MUST treat this file as a map, not a full encyclopedia.
-- Agents MUST read `ARCHITECTURE.md` before large structural changes.
-- Agents MUST track TODO state in an active plan under `docs/exec-plans/active/`.
-- Agents MUST update design decisions in `docs/design-docs/`.
-- Agents SHOULD keep changes small and verifiable.
-- Agents MAY propose alternative structures with explicit tradeoff notes.
-
-## Documentation Rules
-
-- External-facing modules MUST include clear documentation comments.
-- Architectural decisions SHOULD be recorded with rationale and impact.
-- Reference notes MAY be added under `docs/references/`.
-
-## Quality Rules
-
-- Scripts MUST fail fast on errors.
-- CI checks SHOULD validate document links and architecture docs.
-- Generated files MUST preserve existing user content when possible.
+- Agents MUST keep this file under 100 lines.
