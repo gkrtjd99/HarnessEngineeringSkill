@@ -119,7 +119,7 @@ Purpose: orchestrate Run phase, Judge phase, report capture, cleanup.
 
 Inputs:
 
-- `tests/fixtures/interview.json` (answers to the ten interview questions)
+- `tests/fixtures/interview.json` (answers to the eleven interview questions)
 - `tests/prompts/run.md` (Run-phase instruction)
 - `tests/judge-rubric.md` (judge prompt and checklist)
 - `targets/claude-code/harness-init/` (bundle to exercise)
@@ -198,7 +198,7 @@ Design points:
 
 ### `tests/fixtures/interview.json`
 
-Holds one canonical set of answers for the ten questions in `SKILL.md`.
+Holds one canonical set of answers for the eleven questions in `SKILL.md`.
 JSON keeps the file diffable when we revise. Example shape:
 
 ```json
@@ -212,7 +212,8 @@ JSON keeps the file diffable when we revise. Example shape:
   "coreConstraints": "No PII leaks, all mutations traced via request-id",
   "referenceTools": "fastify, prisma, postgres",
   "doneWhen": "Orders can be created, read, reserved, and shipped via API.",
-  "projectContext": "Existing repo with legacy `lib/` that must stay compatible."
+  "projectContext": "Existing repo with legacy `lib/` that must stay compatible.",
+  "moduleContractAreas": "API routes, order services, inventory repository, shipping worker, deployment workflows, shared validation."
 }
 ```
 
@@ -223,7 +224,7 @@ formatting them into the interview exchange expected by `SKILL.md`.
 
 Static instruction file the Run phase feeds to `claude -p`. It tells the
 model: load the `harness-init` skill, treat the following JSON object as
-the ten interview answers, execute the skill's generation rules, and
+the eleven interview answers, execute the skill's generation rules, and
 write the output files into the current directory. This file is short
 and committed to the repo so that what the Run phase instructs is always
 reviewable without reading shell.
@@ -248,8 +249,16 @@ The rubric has two sections.
    - `ARCHITECTURE.md` follows matklad's system-map style (sections for
      overview, code map, and cross-cutting concerns).
    - `docs/design-docs/index.md`, `docs/design-docs/core-beliefs.md`,
-     `docs/exec-plans/tech-debt-tracker.md`, `docs/product-specs/index.md`
+     `docs/exec-plans/tech-debt-tracker.md`, `docs/generated/code-map.md`,
+     `docs/module-contracts/README.md`, `docs/product-specs/index.md`,
+     `docs/references/development-rules.md`
      all exist.
+   - `docs/generated/code-map.md` covers the generated project's important
+     code areas, including frontend, backend, infra, scripts, shared code,
+     styles, tests, generated artifacts, or equivalent areas.
+   - `AGENTS.md` stays under 100 lines, acts as a navigation map, and
+     points to `docs/references/development-rules.md` for detailed
+     development rules.
    - At least one `docs/references/*-llms.txt` exists.
    - `scripts/init.sh` exists and is executable.
    - `doneWhen` from the fixture is reflected in `AGENTS.md` and in at
@@ -263,12 +272,13 @@ The rubric has two sections.
 
    - Onboarding clarity: could a subagent pick up work using only these
      docs?
-   - Boundary isolation: are modules and responsibilities distinct enough
+   - Boundary isolation: are modules, files, and responsibilities distinct enough
      to split work?
    - Decision traceability: are constraints and rationale captured in
      design docs rather than scattered or missing?
-   - Actionability: is there a clear first next step a subagent could
-     take, evidenced by the tech-debt tracker or exec-plans content?
+   - Actionability: is there a clear first next step and existing-code reuse
+     path a subagent could take, evidenced by the code map, tech-debt
+     tracker, or exec-plans content?
 
 Note: v1 intentionally omits any direct comparison to `starter-kit/`.
 The judge evaluates only the generated tree against intrinsic criteria.

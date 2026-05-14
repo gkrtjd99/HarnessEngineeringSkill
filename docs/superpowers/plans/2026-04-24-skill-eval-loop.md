@@ -66,7 +66,8 @@ Create `tests/fixtures/interview.json`:
   "coreConstraints": "No PII leaks, all mutations traced via request-id",
   "referenceTools": "fastify, prisma, postgres",
   "doneWhen": "Orders can be created, read, reserved, and shipped via API.",
-  "projectContext": "Existing repo with legacy `lib/` that must stay compatible."
+  "projectContext": "Existing repo with legacy `lib/` that must stay compatible.",
+  "moduleContractAreas": "API routes, order services, inventory repository, shipping worker, deployment workflows, shared validation."
 }
 ```
 
@@ -106,7 +107,7 @@ You are operating inside an empty sandbox project directory. The `harness-init` 
 Your task:
 
 1. Load the `harness-init` skill from `.claude/skills/harness-init/SKILL.md`.
-2. Treat the JSON object appended at the end of this prompt as the user's answers to the ten interview questions defined in the skill. The JSON keys map 1:1 to the question subjects in `SKILL.md` (`projectName`, `projectDescription`, `techStack`, `teamSize`, `agentsInUse`, `primaryWorkflows`, `coreConstraints`, `referenceTools`, `doneWhen`, `projectContext`).
+2. Treat the JSON object appended at the end of this prompt as the user's answers to the eleven interview questions defined in the skill. The JSON keys map 1:1 to the question subjects in `SKILL.md` (`projectName`, `projectDescription`, `techStack`, `teamSize`, `agentsInUse`, `primaryWorkflows`, `coreConstraints`, `referenceTools`, `doneWhen`, `projectContext`, `moduleContractAreas`).
 3. Execute every generation rule in `SKILL.md` using those answers.
 4. Write all generated files into the current working directory.
 5. Do not ask clarifying questions. Do not pause for confirmation. Do not modify files under `.claude/`.
@@ -155,7 +156,7 @@ Emit a report in Markdown. The very first line MUST be a summary line of exactly
 SUMMARY: <n>/<total> hard checks passed; subagent-score <average>/5
 ```
 
-Where `<n>` is the count of `[PASS]` items, `<total>` is 8, and `<average>` is the arithmetic mean of the four subagent-delegation scores rounded to one decimal.
+Where `<n>` is the count of `[PASS]` items, `<total>` is 10, and `<average>` is the arithmetic mean of the four subagent-delegation scores rounded to one decimal.
 
 Then produce the two sections below.
 
@@ -168,20 +169,22 @@ Items to evaluate (in this order):
 1. Root `README.md`, `AGENTS.md`, and `ARCHITECTURE.md` all exist in the generated tree and are non-empty.
 2. `AGENTS.md` contains both an explicit read order and a repository map.
 3. `ARCHITECTURE.md` follows matklad's system-map style, with sections for high-level overview, code map by directory, and cross-cutting concerns.
-4. All four harness core docs exist: `docs/design-docs/index.md`, `docs/design-docs/core-beliefs.md`, `docs/exec-plans/tech-debt-tracker.md`, `docs/product-specs/index.md`.
-5. At least one file matching `docs/references/*-llms.txt` exists and is non-empty.
-6. `scripts/init.sh` exists.
-7. The `doneWhen` / acceptance criteria supplied in the interview answers is reflected both in `AGENTS.md` and in at least one document under `docs/product-specs/` or `docs/exec-plans/active/`.
-8. Cross-document Markdown links inside the generated tree use relative paths and every such link resolves to a file that exists in the tree.
+4. All seven harness core docs exist: `docs/design-docs/index.md`, `docs/design-docs/core-beliefs.md`, `docs/exec-plans/tech-debt-tracker.md`, `docs/generated/code-map.md`, `docs/module-contracts/README.md`, `docs/product-specs/index.md`, `docs/references/development-rules.md`.
+5. `docs/generated/code-map.md` covers at least frontend, backend, infra, scripts, shared code, styles, tests, generated artifacts, or the generated project's equivalent code areas.
+6. `AGENTS.md` stays under 100 lines, acts as a navigation map, and points to `docs/references/development-rules.md` for detailed development rules.
+7. At least one file matching `docs/references/*-llms.txt` exists and is non-empty.
+8. `scripts/init.sh` exists.
+9. The `doneWhen` / acceptance criteria supplied in the interview answers is reflected both in `AGENTS.md` and in at least one document under `docs/product-specs/` or `docs/exec-plans/active/`.
+10. Cross-document Markdown links inside the generated tree use relative paths and every such link resolves to a file that exists in the tree.
 
 ## Subagent-Delegation Rubric
 
 For each of the four axes below, assign an integer score from 1 to 5 and write one paragraph of justification. Do NOT use `[PASS]` or `[FAIL]` markers in this section.
 
 - Onboarding clarity: could a subagent pick up work using only these docs?
-- Boundary isolation: are modules and responsibilities distinct enough to split work across subagents?
+- Boundary isolation: are modules, files, and responsibilities distinct enough to split work across subagents?
 - Decision traceability: are constraints and rationale captured in design docs rather than scattered or missing?
-- Actionability: is there a clear first next step a subagent could take, evidenced by the tech-debt tracker or exec-plans content?
+- Actionability: is there a clear first next step and a clear existing-code reuse path a subagent could take, evidenced by the code map, tech-debt tracker, or exec-plans content?
 
 ---
 
@@ -200,7 +203,7 @@ git add tests/judge-rubric.md
 git commit -m "$(cat <<'EOF'
 feat: Judge 루브릭 추가
 
-- tests/judge-rubric.md에 서브에이전트 위임 관점의 하드 체크리스트 8항목과 질적 평가 4축(5점 척도)을 명시한다.
+- tests/judge-rubric.md에 서브에이전트 위임 관점의 하드 체크리스트 10항목과 질적 평가 4축(5점 척도)을 명시한다.
 - 응답 첫 줄 SUMMARY 포맷과 [PASS]/[FAIL] 사용 범위 제약을 계약으로 고정해 오케스트레이터의 exit-code 파싱이 깨지지 않도록 한다.
 EOF
 )"
@@ -625,7 +628,7 @@ echo "$LATEST"
 head -20 "$LATEST/report.md"
 ```
 
-Expected: the first line of `report.md` matches `^SUMMARY: [0-9]+/8 hard checks passed; subagent-score [0-9.]+/5$`.
+Expected: the first line of `report.md` matches `^SUMMARY: [0-9]+/10 hard checks passed; subagent-score [0-9.]+/5$`.
 
 - [ ] **Step 3: Sanity-check the generated tree**
 
@@ -672,6 +675,6 @@ Spec coverage:
 - `.github/workflows/ci.yml` change — Task 5.
 - End-to-end smoke validation — Task 8.
 
-Type consistency: the rubric's `SUMMARY: <n>/<total>` contract is referenced only in Task 3 and Task 8; totals match (8 hard checks, 4 subagent axes). `[FAIL]` marker is used in Task 7's exit-gate grep and Task 3's rubric constraint; consistent.
+Type consistency: the rubric's `SUMMARY: <n>/<total>` contract is referenced only in Task 3 and Task 8; totals match (10 hard checks, 4 subagent axes). `[FAIL]` marker is used in Task 7's exit-gate grep and Task 3's rubric constraint; consistent.
 
 Placeholders: none — every code block is complete. The only "open" moment is Task 8 Step 4, which depends on the live run and is necessarily conditional.

@@ -76,7 +76,10 @@ Use the harness-init skill to scaffold the project operating documents.
 | `docs/design-docs/index.md` | 설계 결정 목록과 색인 |
 | `docs/design-docs/core-beliefs.md` | 프로젝트의 핵심 원칙과 제약 |
 | `docs/exec-plans/tech-debt-tracker.md` | 기술 부채 추적 |
+| `docs/generated/code-map.md` | 프론트엔드, 백엔드, 인프라, 스크립트, 공유 모듈의 재사용 표면 색인 |
+| `docs/module-contracts/README.md` | 기능과 모듈별 책임, 공개 진입점, 의존성 규칙 색인 |
 | `docs/product-specs/index.md` | 제품 스펙 목록 |
+| `docs/references/development-rules.md` | 상세 개발 규칙과 서브에이전트 handoff 규칙 |
 | `docs/references/*-llms.txt` | 사용 기술 스택의 LLM 참조 문서 |
 | `scripts/init.sh` | 클론 후 빈 폴더 구조를 복원하는 스크립트 |
 
@@ -84,10 +87,13 @@ Use the harness-init skill to scaffold the project operating documents.
 
 | 파일 | 생성 조건 |
 | --- | --- |
+| `docs/BACKEND.md` | 백엔드, API, 워커, 큐, 서비스 계층이 있을 때 |
 | `docs/FRONTEND.md` | 프론트엔드 기술 스택이 있을 때 |
+| `docs/INFRASTRUCTURE.md` | 배포, 호스팅, IaC, CI/CD, 런타임 설정이 있을 때 |
 | `docs/SECURITY.md` | 인증/보안이 핵심 제약으로 언급될 때 |
 | `docs/RELIABILITY.md` | 가용성·장애 대응이 중요한 서비스일 때 |
 | `docs/generated/db-schema.md` | 데이터베이스 구조가 있을 때 |
+| `docs/module-contracts/<module>.md` | 기능, 패키지, 서비스, 인프라 영역, 스크립트 묶음에 명확한 소유권이 있을 때 |
 | `docs/exec-plans/active/EP-xxxx.md` | 현재 진행 중인 실행 계획이 있을 때 |
 | `docs/product-specs/<feature>.md` | 구체적인 기능 스펙이 있을 때 |
 | `docs/DESIGN.md` | 별도로 정리할 설계 결정이 있을 때 |
