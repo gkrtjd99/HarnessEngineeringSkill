@@ -3,6 +3,13 @@
 This document holds detailed development rules that should not live in `AGENTS.md`.
 `AGENTS.md` stays a short navigation map.
 
+## Read Order Usage
+
+- The `AGENTS.md` Read Order is a list of documents to consult when relevant, not a checklist to read in full for every task.
+- Agents MUST always read `ARCHITECTURE.md` for structural context.
+- Agents MUST read this file (`development-rules.md`), `docs/generated/code-map.md`, and the relevant `docs/module-contracts/` files only when adding, refactoring, or removing code or modules.
+- Agents MAY skip the code map and module contracts for documentation-only tasks, configuration tweaks, or scoped bug fixes that do not change module boundaries or public surfaces.
+
 ## Code Discovery
 
 - Agents MUST search existing modules, components, scripts, styles, tests, generated files, and configuration before adding new code.

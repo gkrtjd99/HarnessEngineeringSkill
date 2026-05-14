@@ -20,6 +20,10 @@ Keeping everything in `AGENTS.md` would make the agent entry point too long and 
 
 The chosen split keeps instructions short, maps broad, and module contracts specific. This lets a parent agent delegate a narrow task with links to the relevant contract while preserving enough structure for subagents to reuse existing code.
 
+## Authority
+
+When `docs/generated/code-map.md` and `docs/module-contracts/<module>.md` disagree about ownership, public entry points, or dependency rules, the module contract is the source of truth. The code map is a derived index for fast lookup and MUST be updated to match the contract. Agents that find a mismatch MUST fix the code map rather than the contract unless they are explicitly changing the owned module's responsibilities.
+
 ## Tradeoffs
 
 The code map can become stale if agents do not update it after changing ownership or entry points. The templates therefore make map updates part of the required workflow.

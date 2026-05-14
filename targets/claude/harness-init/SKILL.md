@@ -48,7 +48,7 @@ Treat blank answers for questions 9, 10, and 11 as the same fallback placeholder
 - Generate detailed design notes under `docs/design-docs/` only when they are justified by the project.
 - When generating `docs/PLANS.md`, follow the structure encouraged by the OpenAI Codex exec-plans article.
 - Generate optional documents according to the condition table in `references/templates.md` — each optional document has an explicit condition; generate it only when that condition is met.
-- Generate `docs/module-contracts/<module>.md` when a module, feature, package, service, infrastructure area, or script suite has explicit ownership, public entry points, or non-obvious reuse rules.
+- Generate `docs/module-contracts/<module>.md` when a module, feature, package, service, infrastructure area, or script suite has explicit ownership, public entry points, or non-obvious reuse rules. Do NOT generate a contract for small, single-file, or short-lived modules; treat the contract as documentation overhead that pays off only for durable, multi-file surfaces.
 - Populate `docs/generated/code-map.md` with concise entries for important features, modules, scripts, infra entry points, shared utilities, styling surfaces, tests, and generated artifacts.
 - If `referenceTools` is present, generate one `docs/references/<tool>-llms.txt` per tool.
 - If `referenceTools` resolves to the fallback placeholder value, generate a single `docs/references/stack-reference-llms.txt`.
