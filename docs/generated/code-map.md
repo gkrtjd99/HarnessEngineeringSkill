@@ -17,8 +17,8 @@ Read the relevant rows before implementation. Update this file when module owner
 | Design docs | `docs/design-docs/` | `architecture.md`, `skill-distribution.md`, `code-organization-contract.md` | Rationale, tradeoffs, and evolution notes | Existing design note before adding new rationale | [docs/design-docs/index.md](../design-docs/index.md) |
 | References | `docs/references/` | `harness-engineering.md` | Durable harness principles and generator contract | Existing reference contract before expanding templates | [docs/references/harness-engineering.md](../references/harness-engineering.md) |
 | Development rules | `docs/references/development-rules.md` | Code discovery, file organization, surface update, handoff rules | Detailed implementation behavior that should not live in `AGENTS.md` | Existing development rules before changing agent behavior | [docs/references/development-rules.md](../references/development-rules.md) |
-| Tests | `tests/` | Fixtures, prompts, judge rubric, reports | Local skill evaluation inputs and reports | Existing fixtures and rubric before changing eval behavior | `tests/` |
-| Generated docs | `docs/generated/` | `code-map.md`, `db-schema.md` | Generated indexes and derived repository facts | Existing generated document ownership before adding derived docs | [docs/generated/code-map.md](code-map.md) |
+| Tests | `tests/` | Fixtures, prompts, judge rubric, reports | Local skill evaluation inputs and reports | Existing fixtures and rubric before changing eval behavior | [tests/judge-rubric.md](../../tests/judge-rubric.md) |
+| Generated docs | `docs/generated/` | `code-map.md`, `db-schema.md` | Generated indexes and derived repository facts | Existing generated document ownership before adding derived docs | [docs/generated/db-schema.md](db-schema.md) |
 | Module contracts | `docs/module-contracts/` | `README.md`, module contract files | Module ownership, public surfaces, dependency rules, verification commands | Relevant module contract before implementation | [docs/module-contracts/README.md](../module-contracts/README.md) |
 
 ## Large Files

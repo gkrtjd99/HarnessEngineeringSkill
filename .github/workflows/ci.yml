@@ -32,6 +32,10 @@ jobs:
           bash -n starter-kit/scripts/lint-architecture.sh
           bash -n skill/scripts/scan-project.sh
           bash -n scripts/sync-skill-targets.sh
+          bash -n scripts/check-agents-doc.sh
+
+      - name: Check AGENTS.md Line Limit
+        run: bash scripts/check-agents-doc.sh
 
       - name: Sync Skill Targets
         run: bash scripts/sync-skill-targets.sh
