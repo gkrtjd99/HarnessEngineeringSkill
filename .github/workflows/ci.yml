@@ -31,9 +31,11 @@ jobs:
           bash -n starter-kit/scripts/check-doc-links.sh
           bash -n starter-kit/scripts/lint-architecture.sh
           bash -n skill/scripts/scan-project.sh
+          bash -n skill/scripts/check-generated-harness.sh
           bash -n scripts/sync-skill-targets.sh
           bash -n scripts/check-agents-doc.sh
-
+          bash -n scripts/check-bundle-structure.sh
+          bash -n scripts/test-skill-local.sh
       - name: Check AGENTS.md Line Limit
         run: bash scripts/check-agents-doc.sh
 

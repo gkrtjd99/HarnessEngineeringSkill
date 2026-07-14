@@ -6,3 +6,4 @@ Read `core-beliefs.md` for guiding principles.
 Read `architecture.md` for implementation rationale and evolution notes.
 Read `code-organization-contract.md` for code-map and module-contract rationale.
 Read `skill-distribution.md` for multi-runtime skill distribution rationale.
+Read `new-project-workflow.md` for the new-project-first definition and AI-development harness rationale.

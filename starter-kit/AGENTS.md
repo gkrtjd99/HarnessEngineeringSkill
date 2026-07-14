@@ -9,11 +9,11 @@ These rules apply repository-wide unless a nested `AGENTS.md` provides stricter 
 ## Read Order
 
 1. `ARCHITECTURE.md`
-2. `docs/references/development-rules.md`
-3. `docs/generated/code-map.md`
-4. `docs/module-contracts/README.md`
-5. `docs/product-specs/index.md`
-6. `docs/exec-plans/active/`
+2. `docs/product-specs/product-definition.md`
+3. `docs/exec-plans/active/EP-0001-initial-delivery.md`
+4. `docs/references/development-rules.md`
+5. `docs/generated/code-map.md`
+6. `docs/module-contracts/README.md` when present
 7. `docs/design-docs/`
 8. `docs/references/`
 
@@ -33,3 +33,4 @@ These rules apply repository-wide unless a nested `AGENTS.md` provides stricter 
 
 - Agents MUST treat this file as a map, not a full encyclopedia.
 - Agents MUST keep this file under 100 lines.
+- Agents MUST prove the active plan's done-when criteria before reporting completion.

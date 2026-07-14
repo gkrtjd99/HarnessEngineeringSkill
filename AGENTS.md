@@ -17,6 +17,7 @@ This document is the primary agent entry point for this repository.
 ## Repository Map
 
 - `starter-kit/`: static reference template for generated harness documents
+- `CLAUDE.md`: Claude Code auto-load bridge that imports this file
 - `skill/`: canonical `harness-init` skill source
 - `targets/`: generated runtime bundles for supported agent tools
 - `scripts/`: repository automation for syncing runtime bundles

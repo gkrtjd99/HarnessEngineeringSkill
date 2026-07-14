@@ -4,21 +4,41 @@ This document defines the generation rules used by the `harness-init` skill.
 
 The repository treats this file and `skill/SKILL.md` as the canonical content source for all runtime bundles.
 
+## Contents
+
+1. Evidence, core output, optional documents, references, and language rules
+2. Root document templates
+3. Product definition and execution-plan templates
+4. Code map, module contract, design, and development-rule templates
+5. Conditional frontend, backend, infrastructure, security, reliability, and product templates
+
+## Evidence Rules
+
+Use these templates after the new-project definition review or existing-project discovery.
+
+- Prefer existing authoritative documents over parallel replacement documents.
+- Create a document only when it has a concrete owner, audience, and maintenance reason.
+- Do not emit placeholder prose, guessed commands, or empty directory trees.
+- For adoption, record the inventory, gaps, proposed file changes, and open questions before editing.
+- Keep unknown decisions visible as `Open questions`; do not convert them into architecture claims.
+- For a new project, label planned paths and commands as planned until implementation creates them.
+
 ## Core Rule
 
-Treat the following files as the core harness-engineering set:
+For a new project, create the following AI-development harness:
 
 - `README.md`
 - `AGENTS.md`
+- `CLAUDE.md` containing only the Claude Code bridge `@AGENTS.md`
 - `ARCHITECTURE.md`
-- `docs/design-docs/index.md`
-- `docs/design-docs/core-beliefs.md`
-- `docs/exec-plans/tech-debt-tracker.md`
+- `docs/product-specs/product-definition.md`
+- `docs/exec-plans/active/EP-0001-initial-delivery.md`
 - `docs/generated/code-map.md`
-- `docs/module-contracts/README.md`
-- `docs/product-specs/index.md`
 - `docs/references/development-rules.md`
-- at least one `docs/references/*-llms.txt` file
+
+Generate design indexes, module contracts, tech-debt tracking, and domain guides only when the
+project definition gives them real content. For existing-project adoption, each responsibility
+may be satisfied by an existing equivalent; link to that authority instead of duplicating it.
 
 ## Optional Docs
 
@@ -32,6 +52,7 @@ Generate each document only when its stated condition is met:
 | `docs/SECURITY.md` | Authentication, authorization, or RLS is a core constraint |
 | `docs/RELIABILITY.md` | Availability, resource limits, or fault tolerance matter (free-tier infra, SLAs, uptime targets) |
 | `docs/generated/db-schema.md` | A database schema is described or implied |
+| `docs/design-docs/core-beliefs.md` | The interview confirms durable product, engineering, or verification principles |
 | `docs/module-contracts/<module>.md` | A durable, multi-file module, feature, package, service, infrastructure area, or script suite has explicit ownership, public entry points, or non-obvious reuse rules; skip for small, single-file, or short-lived modules |
 | `docs/exec-plans/active/EP-xxxx.md` | At least one in-progress task maps to an execution plan |
 | `docs/exec-plans/completed/EP-xxxx.md` | A previously completed execution plan exists |
@@ -49,12 +70,25 @@ If `referenceTools` is provided as `react, nextjs, prisma`, generate:
 - `docs/references/nextjs-llms.txt`
 - `docs/references/prisma-llms.txt`
 
-If the input is blank or resolves to the fallback placeholder value, generate only `docs/references/stack-reference-llms.txt`.
+If the input is blank or resolves to the fallback placeholder value, record the reference
+need as an open question instead of generating a placeholder file.
 
 ## Language Rule
 
-- `README.md` may be written in the user's language.
-- Every other generated document must be written in English.
+- Conduct the interview and write `README.md` in the user's language unless requested otherwise.
+- Write operating documents in the project team's chosen working language.
+- Use one maintained language consistently across the operating document set.
+
+## CLAUDE.md Template
+
+Keep this file as a minimal Claude Code auto-load bridge. `AGENTS.md` remains the canonical
+cross-runtime entry point.
+
+```markdown
+# Claude Code Project Instructions
+
+@AGENTS.md
+```
 
 ## AGENTS.md Template
 
@@ -64,13 +98,12 @@ If the input is blank or resolves to the fallback placeholder value, generate on
 ## Read Order
 
 1. ARCHITECTURE.md
-2. docs/references/development-rules.md
-3. docs/generated/code-map.md
-4. docs/module-contracts/README.md
-5. docs/product-specs/index.md
-6. docs/exec-plans/active/
-7. docs/design-docs/
-8. docs/references/
+2. docs/product-specs/product-definition.md
+3. docs/exec-plans/active/EP-0001-initial-delivery.md
+4. docs/references/development-rules.md
+5. docs/generated/code-map.md
+6. docs/module-contracts/README.md (when present)
+7. docs/design-docs/ (when present)
 
 ## Repository Map
 
@@ -88,6 +121,7 @@ If the input is blank or resolves to the fallback placeholder value, generate on
 
 - Agents MUST treat this file as a map, not a full manual.
 - Agents MUST keep this file under 100 lines.
+- Agents MUST prove the current plan's done-when criteria before reporting completion.
 ```
 
 ## README.md Template
@@ -95,7 +129,7 @@ If the input is blank or resolves to the fallback placeholder value, generate on
 ```markdown
 # Project Name
 
-Brief project overview.
+[Concrete overview derived from project evidence or user input.]
 
 ## Installation
 
@@ -126,6 +160,117 @@ This document explains the stable structure of the repository.
 ## Invariants
 ```
 
+## docs/product-specs/product-definition.md Template
+
+```markdown
+# Product Definition
+
+## Status and Sources
+
+Distinguish confirmed decisions, proposed defaults, and open questions.
+
+## Product Summary
+
+## Problem and Current Alternative
+
+## Target Users
+
+## Value Proposition
+
+## User Journeys
+
+## Functional Requirements
+
+| ID | Priority | Capability | Why | Acceptance Criteria |
+| --- | --- | --- | --- | --- |
+
+## Non-Functional Requirements
+
+## Scope
+
+### In Scope
+
+### Out of Scope
+
+## Success Signals
+
+## Agent Operating Model
+
+Document agent permissions, human checkpoints, escalation boundaries, and handoff ownership.
+
+## Verification and Handoff
+
+## Assumptions, Dependencies, and Risks
+
+## Open Questions
+```
+
+## docs/product-specs/product-definition.draft.md Template
+
+```markdown
+# Product Definition Draft
+
+## Progress
+
+- Workflow: New Project Bootstrap
+- Confirmed sections: [n]/14
+- Last updated: [date and timezone]
+- Next section: [number and title]
+
+## Confirmed Decisions
+
+### [Section Number]. [Section Title]
+
+[Confirmed summary]
+
+## Proposed Defaults
+
+## Open Questions
+
+## Next Questions
+
+1. [The next consequential question]
+
+## Continuation Note
+
+Read this draft before asking questions. Preserve confirmed decisions and resume from `Next Questions`.
+```
+
+## docs/exec-plans/active/EP-0001-initial-delivery.md Template
+
+```markdown
+# EP-0001: Initial Delivery
+
+## Outcome
+
+Name the first end-to-end user or technical outcome.
+
+## Product Trace
+
+Link the P0 requirement, user journey, and acceptance criteria this plan implements.
+
+## Context and Constraints
+
+## Planned Changes
+
+| Area | Change | Verification |
+| --- | --- | --- |
+
+## Tasks
+
+Use ordered, independently checkable tasks.
+
+## Verification
+
+Separate automated checks, manual checks, and checks whose commands must be wired first.
+
+## Done When
+
+## Risks and Rollback
+
+## Handoff
+```
+
 ## docs/generated/code-map.md Template
 
 ```markdown
@@ -139,16 +284,11 @@ Read the relevant rows before implementation. Update this file when module owner
 
 ## Surfaces
 
+Populate only areas confirmed by the project definition. Mark an entry `planned` until its
+source path exists; never copy generic frontend, backend, or infrastructure rows blindly.
+
 | Area | Owner Module | Entry Points | Responsibility | Reuse Before Adding | Source |
 | --- | --- | --- | --- | --- | --- |
-| Frontend | `app/` | Routes, pages, UI components | User-facing screens and interactions | Existing routes, feature components, shared UI primitives | `app/` |
-| Backend | `server/` | API handlers, services, workers | Server-side behavior and data workflows | Existing services, repositories, validators, jobs | `server/` |
-| Infra | `infra/` | IaC, deployment config, CI/CD | Runtime platform and operational wiring | Existing modules, environment conventions, workflow jobs | `infra/` |
-| Scripts | `scripts/` | Shell or task scripts | Local and CI automation | Existing commands and shared script helpers | `scripts/` |
-| Shared | `packages/` | Public package exports | Cross-runtime reusable logic | Existing package exports and module contracts | `packages/` |
-| Styles | `styles/` | Tokens, resets, globals | App-wide styling foundations | Existing tokens, CSS modules, component-local styles | `styles/` |
-| Tests | `tests/` | Fixtures, prompts, test helpers, reports | Verification and regression coverage | Existing fixtures, helpers, snapshots, and test conventions | `tests/` |
-| Generated | `docs/generated/` | Generated indexes and derived facts | Machine- or tool-generated project references | Existing generated docs before adding derived surfaces | `docs/generated/` |
 
 ## Large Files
 
@@ -220,9 +360,9 @@ Module contracts describe owned code areas so agents can reuse existing surfaces
 ```markdown
 # Design Docs Index
 
-- [ ] Core beliefs
-- [ ] Architecture decisions
-- [ ] Domain guides
+## Existing Decisions
+
+## Open Questions
 ```
 
 ## docs/design-docs/core-beliefs.md Template
@@ -235,6 +375,8 @@ Module contracts describe owned code areas so agents can reuse existing surfaces
 ## Engineering Principles
 
 ## Verification Principles
+
+## Open Questions
 ```
 
 ## docs/exec-plans/tech-debt-tracker.md Template
@@ -247,6 +389,8 @@ Module contracts describe owned code areas so agents can reuse existing surfaces
 ## Prioritized Debt
 
 ## Resolved Debt
+
+## Open Questions
 ```
 
 ## docs/product-specs/index.md Template
@@ -257,6 +401,8 @@ Module contracts describe owned code areas so agents can reuse existing surfaces
 ## Active Specs
 
 ## Archived Specs
+
+## Open Questions
 ```
 
 ## docs/product-specs/<feature>.md Template
@@ -273,7 +419,7 @@ Module contracts describe owned code areas so agents can reuse existing surfaces
 ## Done When
 ```
 
-## docs/exec-plans/active/EP-0001-template.md Template
+## Generic Execution Plan Template
 
 ```markdown
 # Execution Plan
@@ -614,9 +760,5 @@ Pitfalls
 
 ## scripts/init.sh Template
 
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-mkdir -p docs/design-docs docs/exec-plans/active docs/exec-plans/completed docs/generated docs/module-contracts docs/product-specs docs/references scripts
-```
+There is no default `scripts/init.sh` template. Generate the script only after project-specific,
+safe, idempotent initialization commands are confirmed. Do not generate a comment-only script.

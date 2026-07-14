@@ -1,19 +1,26 @@
 # Harness Init Prompt
 
-Use the `harness-init` workflow to scaffold a harness-engineering document set for this repository.
+Use the `harness-init` workflow to define a new software project and generate its AI-driven
+development harness. Use existing-project adoption only when meaningful project code or
+documents already exist.
 
 ## Required Behavior
 
-- Ask the canonical 11 interview questions from `SKILL.md`
-- Generate `README.md`, `AGENTS.md`, `ARCHITECTURE.md`, and the harness core `docs/` set
+- Default to the new-project bootstrap workflow in `SKILL.md`
+- Read `references/project-definition.md` and ask one to three questions at a time
+- Confirm the product definition, AI agent boundaries, verification loop, and first milestone
+- Generate the core AI-development harness defined by `SKILL.md`
+- Preserve useful existing authority when the user explicitly needs adoption mode
 - Keep `README.md` in the user's language
-- Keep the remaining generated documents in English
-- Reflect `doneWhen` in at least one execution plan or product spec
-- Generate `scripts/init.sh`
+- Use the project team's chosen maintained language for agent-operating documents
+- Trace P0 capabilities from the user problem through acceptance criteria and verification
+- Generate a concrete, independently verifiable first execution plan
+- Do not generate placeholders, invented commands, empty trees, or a no-op `scripts/init.sh`
 
 ## Required References
 
 - `SKILL.md`
+- `references/project-definition.md`
 - `references/templates.md`
 - any runtime or project-specific documents the user points to
 

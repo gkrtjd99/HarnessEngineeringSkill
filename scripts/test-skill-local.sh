@@ -4,121 +4,267 @@ set -euo pipefail
 : '
 test-skill-local.sh
 
-Runs the harness-init skill end-to-end in a throwaway sandbox using Claude
-Code CLI, then invokes a second CLI call as a judge to score the output
-against tests/judge-rubric.md. Writes a report to tests/reports/<timestamp>/
-and exits non-zero if any hard-checklist item failed.
+Runs harness-init through Claude Code CLI in three realistic scenarios:
+  - greenfield-complete: complete context produces a final harness
+  - greenfield-ambiguous: incomplete context produces a persisted interview draft
+  - adoption-preserve: existing human-authored authority remains unchanged
+
+Each run stores raw output, generated files, deterministic validator output, and a
+Claude judge report under tests/reports/<timestamp>/<scenario>/.
 '
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUNDLE="$ROOT_DIR/targets/claude-code/harness-init"
-FIXTURE="$ROOT_DIR/tests/fixtures/interview.json"
-PROMPT_RUN="$ROOT_DIR/tests/prompts/run.md"
-RUBRIC="$ROOT_DIR/tests/judge-rubric.md"
+SCENARIOS_DIR="$ROOT_DIR/tests/scenarios"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-REPORT_DIR="$ROOT_DIR/tests/reports/$STAMP"
-SANDBOX=""
-JUDGE_INPUT=""
+REPORT_ROOT="$ROOT_DIR/tests/reports/$STAMP"
+DEFAULT_SCENARIOS=(
+  "greenfield-complete"
+  "greenfield-ambiguous"
+  "adoption-preserve"
+)
+
+fail() {
+  echo "[test-skill-local] FAIL: $1" >&2
+  exit 1
+}
 
 require_file() {
-  : '
-  require_file PATH
+  [[ -s "$1" ]] || fail "missing or empty file: $1"
+}
 
-  Abort with exit 2 if PATH does not exist or is empty.
-  '
-  [[ -s "$1" ]] || { echo "[test-skill-local] missing or empty: $1" >&2; exit 2; }
+require_dir() {
+  [[ -d "$1" ]] || fail "missing directory: $1"
 }
 
 require_cmd() {
-  : '
-  require_cmd NAME
-
-  Abort with exit 2 if NAME is not on PATH.
-  '
-  command -v "$1" >/dev/null 2>&1 \
-    || { echo "[test-skill-local] required command not found: $1" >&2; exit 2; }
+  command -v "$1" >/dev/null 2>&1 || fail "required command not found: $1"
 }
 
-cleanup() {
-  [[ -n "$SANDBOX" && -d "$SANDBOX" ]] && rm -rf "$SANDBOX"
-  [[ -n "$JUDGE_INPUT" && -f "$JUDGE_INPUT" ]] && rm -f "$JUDGE_INPUT"
-  return 0
+scenario_exists() {
+  case "$1" in
+    greenfield-complete|greenfield-ambiguous|adoption-preserve) return 0 ;;
+    *) return 1 ;;
+  esac
 }
 
-main() {
-  require_cmd claude
-  require_file "$FIXTURE"
-  require_file "$PROMPT_RUN"
-  require_file "$RUBRIC"
-  [[ -d "$BUNDLE" ]] || { echo "[test-skill-local] bundle missing: $BUNDLE" >&2; exit 2; }
+copy_result_tree() {
+  local source="$1"
+  local destination="$2"
 
-  SANDBOX="$(mktemp -d)"
-  trap cleanup EXIT
-
-  mkdir -p "$REPORT_DIR"
-  mkdir -p "$SANDBOX/.claude/skills"
-  cp -R "$BUNDLE" "$SANDBOX/.claude/skills/harness-init"
-
-  echo "[test-skill-local] sandbox: $SANDBOX"
-  echo "[test-skill-local] report dir: $REPORT_DIR"
-
-  local run_prompt
-  run_prompt="$(cat "$PROMPT_RUN")"$'\n\n```json\n'"$(cat "$FIXTURE")"$'\n```\n'
-
-  echo "[test-skill-local] Run phase: invoking claude -p..."
+  mkdir -p "$destination"
   (
-    cd "$SANDBOX"
-    claude -p "$run_prompt" --permission-mode bypassPermissions
-  ) > "$REPORT_DIR/run-stdout.log"
-
-  if ! grep -q '^RUN_DONE$' "$REPORT_DIR/run-stdout.log"; then
-    echo "[test-skill-local] WARNING: RUN_DONE marker not found in run stdout" >&2
-  fi
-
-  mkdir -p "$REPORT_DIR/generated"
-  (
-    cd "$SANDBOX"
+    cd "$source"
     find . -mindepth 1 \( -path './.claude' -prune \) -o -print \
       | while IFS= read -r entry; do
-          [[ "$entry" == "." ]] && continue
           if [[ -d "$entry" ]]; then
-            mkdir -p "$REPORT_DIR/generated/$entry"
-            continue
+            mkdir -p "$destination/$entry"
+          else
+            mkdir -p "$destination/$(dirname "$entry")"
+            cp "$entry" "$destination/$entry"
           fi
-          mkdir -p "$REPORT_DIR/generated/$(dirname "$entry")"
-          cp "$entry" "$REPORT_DIR/generated/$entry"
         done
   )
+}
 
-  local judge_prompt
-  JUDGE_INPUT="$(mktemp)"
-  {
-    cat "$RUBRIC"
-    echo ""
-    echo "## Generated Tree"
-    (
-      cd "$SANDBOX"
-      find . -type f -not -path './.claude/*' | sort | while IFS= read -r f; do
-        echo ""
-        echo "### ${f#./}"
-        echo '```'
-        cat "$f"
-        echo '```'
-      done
-    )
-  } > "$JUDGE_INPUT"
+emit_tree() {
+  local source="$1"
+  local exclude_skill="$2"
+  local file
 
-  echo "[test-skill-local] Judge phase: invoking claude -p..."
-  judge_prompt="$(cat "$JUDGE_INPUT")"
-  claude -p "$judge_prompt" --permission-mode bypassPermissions \
-    > "$REPORT_DIR/report.md"
-
-  echo "[test-skill-local] report: $REPORT_DIR/report.md"
-
-  if grep -q '^- \[FAIL\]' "$REPORT_DIR/report.md"; then
-    echo "[test-skill-local] hard-checklist FAIL detected; exiting 1" >&2
-    exit 1
+  if [[ "$exclude_skill" == "true" ]]; then
+    while IFS= read -r file; do
+      echo ""
+      echo "### ${file#./}"
+      echo '```'
+      cat "$source/${file#./}"
+      echo '```'
+    done < <(cd "$source" && find . -type f -not -path './.claude/*' | LC_ALL=C sort)
+  else
+    while IFS= read -r file; do
+      echo ""
+      echo "### ${file#./}"
+      echo '```'
+      cat "$source/${file#./}"
+      echo '```'
+    done < <(cd "$source" && find . -type f | LC_ALL=C sort)
   fi
+}
+
+check_preserved_files() {
+  local seed="$1"
+  local sandbox="$2"
+  local report_dir="$3"
+  local rel
+
+  : > "$report_dir/preservation-check.log"
+  for rel in AGENTS.md README.md; do
+    if cmp -s "$seed/$rel" "$sandbox/$rel"; then
+      echo "[PASS] preserved: $rel" >> "$report_dir/preservation-check.log"
+    else
+      echo "[FAIL] changed: $rel" >> "$report_dir/preservation-check.log"
+      return 1
+    fi
+  done
+}
+
+run_scenario() (
+  set -euo pipefail
+
+  local scenario="$1"
+  local scenario_dir="$SCENARIOS_DIR/$scenario"
+  local prompt_file="$scenario_dir/prompt.md"
+  local rubric_file="$scenario_dir/rubric.md"
+  local context_file=""
+  local seed_dir=""
+  local validator_mode=""
+  local sandbox report_dir run_prompt judge_input validation_status preservation_status
+
+  cleanup_scenario() {
+    rm -rf "$sandbox"
+    [[ -z "${judge_input:-}" ]] || rm -f "$judge_input"
+  }
+
+  case "$scenario" in
+    greenfield-complete)
+      context_file="$ROOT_DIR/tests/fixtures/bootstrap-interview.json"
+      validator_mode="final"
+      ;;
+    greenfield-ambiguous)
+      validator_mode="draft"
+      ;;
+    adoption-preserve)
+      seed_dir="$ROOT_DIR/tests/fixtures/adoption-project"
+      ;;
+  esac
+
+  require_file "$prompt_file"
+  require_file "$rubric_file"
+  [[ -z "$context_file" ]] || require_file "$context_file"
+  [[ -z "$seed_dir" ]] || require_dir "$seed_dir"
+
+  report_dir="$REPORT_ROOT/$scenario"
+  sandbox="$(mktemp -d)"
+  trap cleanup_scenario EXIT
+  mkdir -p "$report_dir"
+
+  if [[ -n "$seed_dir" ]]; then
+    cp -R "$seed_dir/." "$sandbox"
+    copy_result_tree "$seed_dir" "$report_dir/original-seed"
+  fi
+
+  mkdir -p "$sandbox/.claude/skills"
+  cp -R "$BUNDLE" "$sandbox/.claude/skills/harness-init"
+
+  run_prompt="$(cat "$prompt_file")"
+  if [[ -n "$context_file" ]]; then
+    run_prompt+=$'\n\n```json\n'
+    run_prompt+="$(cat "$context_file")"
+    run_prompt+=$'\n```\n'
+  fi
+
+  echo "[test-skill-local] run: $scenario"
+  if ! (
+    cd "$sandbox"
+    claude -p "$run_prompt" --permission-mode bypassPermissions
+  ) > "$report_dir/run-stdout.log" 2>&1; then
+    if grep -q 'Not logged in' "$report_dir/run-stdout.log"; then
+      fail "Claude CLI is not logged in; run /login, then rerun this evaluation"
+    fi
+    fail "$scenario agent run failed; see $report_dir/run-stdout.log"
+  fi
+
+  validation_status=0
+  if [[ -n "$validator_mode" ]]; then
+    if ! bash "$sandbox/.claude/skills/harness-init/scripts/check-generated-harness.sh" \
+      "--$validator_mode" "$sandbox" > "$report_dir/harness-check.log" 2>&1; then
+      validation_status=1
+    fi
+  fi
+
+  preservation_status=0
+  if [[ -n "$seed_dir" ]]; then
+    if ! check_preserved_files "$seed_dir" "$sandbox" "$report_dir"; then
+      preservation_status=1
+    fi
+  fi
+
+  copy_result_tree "$sandbox" "$report_dir/generated"
+  judge_input="$(mktemp)"
+  {
+    cat "$rubric_file"
+    echo ""
+    echo "## Agent Run Output"
+    echo '```'
+    cat "$report_dir/run-stdout.log"
+    echo '```'
+    if [[ -f "$report_dir/harness-check.log" ]]; then
+      echo ""
+      echo "## Deterministic Harness Check"
+      echo '```'
+      cat "$report_dir/harness-check.log"
+      echo '```'
+    fi
+    if [[ -f "$report_dir/preservation-check.log" ]]; then
+      echo ""
+      echo "## Preservation Check"
+      echo '```'
+      cat "$report_dir/preservation-check.log"
+      echo '```'
+    fi
+    if [[ -n "$seed_dir" ]]; then
+      echo ""
+      echo "## Original Seed Tree"
+      emit_tree "$seed_dir" "false"
+    fi
+    echo ""
+    echo "## Result Tree"
+    emit_tree "$sandbox" "true"
+  } > "$judge_input"
+
+  echo "[test-skill-local] judge: $scenario"
+  claude -p "$(cat "$judge_input")" --permission-mode bypassPermissions \
+    > "$report_dir/report.md"
+
+  [[ "$validation_status" == "0" ]] \
+    || fail "$scenario failed deterministic harness validation; see $report_dir/harness-check.log"
+  [[ "$preservation_status" == "0" ]] \
+    || fail "$scenario changed protected seed files; see $report_dir/preservation-check.log"
+  if grep -q '^- \[FAIL\]' "$report_dir/report.md"; then
+    fail "$scenario failed judge hard checks; see $report_dir/report.md"
+  fi
+
+  echo "[test-skill-local] PASS: $scenario ($report_dir)"
+)
+
+main() {
+  local scenarios=("$@")
+  local scenario
+
+  if (( ${#scenarios[@]} == 1 )) && [[ "${scenarios[0]}" == "--help" || "${scenarios[0]}" == "-h" ]]; then
+    cat <<'EOF'
+Usage: test-skill-local.sh [scenario ...]
+
+Run any combination of:
+  greenfield-complete
+  greenfield-ambiguous
+  adoption-preserve
+
+With no scenario arguments, run all three using Claude Code CLI.
+EOF
+    return 0
+  fi
+
+  require_cmd claude
+  require_dir "$BUNDLE"
+  if (( ${#scenarios[@]} == 0 )); then
+    scenarios=("${DEFAULT_SCENARIOS[@]}")
+  fi
+
+  for scenario in "${scenarios[@]}"; do
+    scenario_exists "$scenario" || fail "unknown scenario: $scenario"
+    run_scenario "$scenario"
+  done
 }
 
 main "$@"

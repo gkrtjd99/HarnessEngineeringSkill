@@ -10,7 +10,10 @@ The same failure mode appears across frontend, backend, infra, scripts, tests, s
 
 ## Decision
 
-Generated harnesses include `docs/generated/code-map.md` as a concise index of reusable code surfaces. They also include `docs/module-contracts/README.md` as the index for durable module contracts, with optional per-module contracts under `docs/module-contracts/`.
+Generated harnesses include `docs/generated/code-map.md` as a concise index of confirmed,
+planned or implemented code surfaces. They add `docs/module-contracts/README.md` and
+per-module contracts only after the project definition identifies durable boundaries with
+ownership, public entry points, or non-obvious reuse rules.
 
 `docs/references/development-rules.md` carries the behavioral rules: search existing code first, reuse owned modules before adding new surfaces, avoid catch-all files, split large files, and update the map when ownership changes. `AGENTS.md` links to that document while remaining a short navigation map. `ARCHITECTURE.md` carries the stable boundaries: public surfaces, dependency direction, file organization, and invariants.
 
@@ -32,6 +35,8 @@ Per-module contracts add documentation overhead. They are optional until a modul
 
 ## Consequences
 
-New generated projects have a place to describe frontend, backend, infra, scripts, shared packages, styles, tests, and generated artifacts without creating a separate rule system for each area.
+New generated projects have a place to describe whichever frontend, backend, infra, scripts,
+shared packages, styles, tests, and generated artifacts are actually planned without creating
+a separate rule system for each area.
 
 Subagent prompts can reference a small set of files instead of restating the whole repository architecture.

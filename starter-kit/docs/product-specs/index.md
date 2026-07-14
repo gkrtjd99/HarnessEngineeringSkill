@@ -4,7 +4,9 @@ Track active and archived product specs.
 
 ## Active Specs
 
-- `new-user-onboarding.md`
+- `product-definition.md`
+
+Add `new-user-onboarding.md` only when onboarding is a confirmed product feature.
 
 ## Archived Specs
 

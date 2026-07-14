@@ -9,7 +9,10 @@
 | Name | Kind | Purpose | Source |
 | --- | --- | --- | --- |
 | Agent entry point | document | Baseline collaboration rules | [starter-kit/AGENTS.md](../../starter-kit/AGENTS.md) |
+| Claude Code bridge | document | Auto-loads the canonical agent entry point in Claude Code | [starter-kit/CLAUDE.md](../../starter-kit/CLAUDE.md) |
 | Architecture template | document | Stable project structure map | [starter-kit/ARCHITECTURE.md](../../starter-kit/ARCHITECTURE.md) |
+| Product definition | document | Trace problems and P0 capabilities to acceptance criteria | [starter-kit/docs/product-specs/product-definition.md](../../starter-kit/docs/product-specs/product-definition.md) |
+| First delivery plan | document | Define the first independently verifiable vertical slice | [starter-kit/docs/exec-plans/active/EP-0001-initial-delivery.md](../../starter-kit/docs/exec-plans/active/EP-0001-initial-delivery.md) |
 | Optional docs | documents | Reference examples for generated docs | [starter-kit/docs/](../../starter-kit/docs/) |
 
 ## Internal Reuse

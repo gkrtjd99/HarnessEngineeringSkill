@@ -2,13 +2,15 @@
 
 ## Responsibility
 
-`scripts/` owns repeatable repository automation for syncing runtime bundles.
+`scripts/` owns repeatable repository automation for syncing runtime bundles and running
+the optional local model evaluation.
 
 ## Public Entry Points
 
 | Name | Kind | Purpose | Source |
 | --- | --- | --- | --- |
 | `sync-skill-targets.sh` | script | Regenerate runtime bundles from canonical skill source | [scripts/sync-skill-targets.sh](../../scripts/sync-skill-targets.sh) |
+| `test-skill-local.sh` | script | Run Claude-based greenfield, ambiguous-interview, and adoption-preservation evaluations | [scripts/test-skill-local.sh](../../scripts/test-skill-local.sh) |
 
 ## Internal Reuse
 
@@ -26,4 +28,6 @@ Scripts SHOULD operate from the repository root and avoid runtime-specific logic
 
 ## Verification
 
-Run `bash -n scripts/sync-skill-targets.sh` after shell changes.
+Run `bash -n` for changed scripts. Run `bash scripts/test-skill-local.sh` only when Claude CLI
+and the local, gitignored `tests/` evaluation inputs are available and an end-to-end model
+evaluation is required.

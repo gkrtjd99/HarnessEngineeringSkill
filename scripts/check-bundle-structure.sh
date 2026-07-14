@@ -15,7 +15,9 @@ TARGETS_DIR="$ROOT_DIR/targets"
 REQUIRED_COMMON=(
   "SKILL.md"
   "INSTALL.md"
+  "references/project-definition.md"
   "references/templates.md"
+  "scripts/check-generated-harness.sh"
   "scripts/scan-project.sh"
 )
 
@@ -44,6 +46,8 @@ check_bundle() {
 
   [[ -x "$bundle/scripts/scan-project.sh" ]] \
     || fail "$runtime: scripts/scan-project.sh is not executable"
+  [[ -x "$bundle/scripts/check-generated-harness.sh" ]] \
+    || fail "$runtime: scripts/check-generated-harness.sh is not executable"
 
   skill="$bundle/SKILL.md"
   head -1 "$skill" | grep -q '^---$' \
